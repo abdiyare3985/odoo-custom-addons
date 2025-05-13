@@ -1,0 +1,13 @@
+<odoo>
+    <data>
+        <!-- Parent Menu -->
+        <menuitem id="utility_menu_root" name="Utility" sequence="10"/>
+        <menuitem id="utility_menu_config_root" parent="utility_menu_root" name="Configuration"/>
+         <menuitem id="menu_water_utility_properties" 
+              name="Property" 
+              parent="utility_menu_root" 
+              sequence="30"/>
+
+        <menuitem id="menu_meter_readings" name="Meter Readings" parent="utility_menu_root" sequence="50"/>
+    </data>
+</odoo>

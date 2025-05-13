@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_meter_group_tree" model="ir.ui.view">
+        <field name="name">meter.group.tree</field>
+        <field name="model">meter.group</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="code"/>
+                <field name="name"/>
+                <!-- <field name="meter_count" widget="statinfo"/> -->
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_meter_group_form" model="ir.ui.view">
+        <field name="name">meter.group.form</field>
+        <field name="model">meter.group</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                        <h2>
+                            <field name="code"/>
+                        </h2>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <!-- <field name="company_id" groups="base.group_multi_company"/> -->
+                        </group>
+                        <group>
+                            <!-- <field name="meter_count" widget="statinfo"/> -->
+                        </group>
+                    </group>
+                    
+                    <!-- <notebook>
+                        <page string="Meters">
+                            <field name="meter_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="serial_number"/>
+                                    <field name="installation_date"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+                    </notebook> -->
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action and Menu Items -->
+    <record id="action_meter_group" model="ir.actions.act_window">
+        <field name="name">Meter Groups</field>
+        <field name="res_model">meter.group</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_meter_group_root" name="Meter Groups"
+              parent="utility_menu_config_root"
+              action="action_meter_group"
+              sequence="15"/>
+</odoo>

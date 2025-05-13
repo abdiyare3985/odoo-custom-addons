@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<record id="view_crm_lead_form_inherit_utmod" model="ir.ui.view">
+<field name="name">crm.lead.form.inherit.utmod</field>
+<field name="model">crm.lead</field>
+<!--  We are modifying the default CRM Lead form  -->
+<field name="inherit_id" ref="crm.crm_lead_view_form"/>
+<field name="arch" type="xml">
+<xpath expr="//group[@name='opportunity_partner']/div[@class='o_row o_row_readonly'][field[@name='phone']]" position="after">
+<field name="zone_id"/>
+<field name="meter_id" readonly="1"/>
+</xpath>
+</field>
+</record>
+<record id="view_crm_lead_form_inherit" model="ir.ui.view">
+<field name="name">crm.lead.form.inherit</field>
+<field name="model">crm.lead</field>
+<field name="inherit_id" ref="crm.crm_lead_view_form"/>
+<field name="arch" type="xml">
+<!--  Add custom button after the Won button  -->
+<xpath expr="//header/button[@name='action_set_won_rainbowman']" position="before">
+<button name="action_open_create_customer_meter_wizard" string="Create Meter" type="object" class="oe_highlight" data-hotkey="n" title="Custom Button" 
+invisible="not active or probability == 100 or type == 'lead'"
+/>
+</xpath>
+</field>
+</record>
+
+</odoo>

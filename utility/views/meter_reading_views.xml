@@ -1,0 +1,127 @@
+<odoo>
+    <record id="view_meter_reading_tree" model="ir.ui.view">
+        <field name="name">meter.reading.tree</field>
+        <field name="model">meter.reading</field>
+        <field name="arch" type="xml">
+            <tree>
+            <field name="invoice_id"/>
+            
+            <field name="meter_id"/>
+            <field name="customer"/>
+                <field name="display_name"/>
+                
+                <field name="reading_date"/>
+                <field name="consumption"/>
+                <field name="amount" />
+                <field name="payment_state" string="Payment" widget="badge" decoration-danger="payment_state == 'not_paid'" decoration-warning="payment_state in ('partial', 'in_payment')" decoration-success="payment_state in ('paid', 'reversed')" invisible="payment_state == 'invoicing_legacy' or state != 'posted'" />
+                <field name="state" widget="badge" decoration-success="state == 'posted'" decoration-info="state == 'draft'" optional="show" on_change="1" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_meter_reading_form" model="ir.ui.view">
+    <field name="name">meter.reading.form</field>
+    <field name="model">meter.reading</field>
+    <field name="arch" type="xml">
+        <form>
+            <!-- Hidden Technical Fields -->
+            <field name="is_invoiced" invisible="1"/>
+            <field name="invoice_id" invisible="1"/>
+            <field name="state" invisible="1"/>
+            <header>
+                <!-- <button name="action_create_invoice" 
+                        string="Create Invoice" 
+                        type="object" 
+                        class="btn-primary" 
+                        invisible="is_invoiced"/>
+                
+                <button name="action_open_invoice"
+                        string="View Invoice"
+                        type="object"
+                        class="btn-secondary"
+                        invisible="not is_invoiced"/> -->
+
+                       <!-- Show the invoice state as a status bar -->
+                    <field name="state" 
+                           widget="statusbar"
+                           statusbar_visible="draft,posted,cancel"
+                           invisible="(consumption==0)"
+                           />
+
+                           <button string="Confirm" type="object" name="action_post_invoice" 
+                    class="oe_highlight" 
+                    
+                    invisible="state=='posted' or state=='cancel' or (consumption==0)"
+                     />
+                     <button string="Cancel" type="object" name="action_cancel_invoice" class="btn-secondary" invisible="state=='posted' or (consumption==0)"/>
+
+                      <button string="Reset to Draft"
+                            type="object"
+                            name="action_reset_to_draft"
+                            class="btn-secondary"
+                           
+                           invisible="state=='draft' or (consumption==0)"
+                            />
+                    
+                    <!-- Your buttons, e.g. Save, Confirm, etc. -->
+                   
+                    <!-- <button string="Confirm" type="object" name="action_post_invoice" 
+                    class="oe_highlight" 
+                    
+                    invisible="state=='posted' or (consumption==0)"
+                     />
+                      
+                    <button string="Cancel" type="object" name="cancel" class="btn-secondary" invisible="state=='posted' or (consumption==0)"/>
+                     <button string="Reset to Draft"
+                            type="object"
+                            name="action_reset_to_draft"
+                            class="btn-secondary"
+                           invisible="state=='draft' or (consumption==0)"
+                            /> -->
+            </header>
+            
+            <sheet>
+                <group>
+                    <field name="meter_id"/>
+                    <field name="bill_period" readonly="1"/>
+                    
+                    <group string="Consumption">
+                        <field name="prev_reading"/>
+                        <field name="current_reading"/>
+                        <field name="consumption" readonly="1"/>
+                        <field name="rate" readonly="1"/>
+                         <field name="net_bill" readonly="1"/>
+                          <field name="tax_amount" readonly="1"/>
+                    </group>
+                    
+                    <group string="Billing">
+                        <field name="amount" readonly="1"/>
+                       
+                        
+                        <group string="Applied Discount" invisible="not meter_id.discount_id">
+                            <field name="discount_percentage" readonly="1"/>
+                            <field name="discount_amount" readonly="1"/>
+                        </group>
+                    </group>
+                </group>
+            </sheet>
+            <div class="oe_chatter">
+          <field name="message_follower_ids" widget="mail_followers" readonly="1"/>
+          <field name="activity_ids" widget="mail_activity" readonly="1"/>
+          <field name="message_ids" widget="mail_thread" readonly="1"/>
+        </div>
+        </form>
+    </field>
+</record>
+
+    
+    
+    <record id="action_meter_reading" model="ir.actions.act_window">
+        <field name="name">Meter Readings</field>
+        <field name="res_model">meter.reading</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    
+    <menuitem id="menu_meter_readings_all" name="All Readings" parent="menu_meter_readings" action="action_meter_reading"/>
+</odoo>

@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_billing_zone_user,billing.zone,model_billing_zone,,1,1,1,1
+access_billing_tariff_block_user,billing.tariff.block,model_billing_tariff_block,,1,1,1,1
+access_billing_tariff_range_user,billing.tariff.range,model_billing_tariff_range,,1,1,1,1
+access_meter_serial_user,meter.serial,model_meter_serial,,1,1,1,1
+access_meter_group_user,meter.group,model_meter_group,,1,1,1,1
+access_meter_discount_user,meter.discount,model_meter_discount,,1,1,1,1
+access_billing_meter_user,billing.meter,model_billing_meter,,1,1,1,1
+access_create_customer_meter_wizard_user,create.customer.meter.wizard,model_create_customer_meter_wizard,,1,1,1,1
+access_meter_reading_user,meter.reading,model_meter_reading,,1,1,1,1

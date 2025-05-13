@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+   <record id="view_billing_meter_form" model="ir.ui.view">
+    <field name="name">billing.meter.form</field>
+    <field name="model">billing.meter</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+                <field name="status" widget="statusbar" clickable="1"/>
+                <button name="action_disconnect" type="object" string="Disconnect" class="btn-primary" condition="status != 'disconnected'"/>
+                <button name="action_connect" type="object" string="Reconnect" class="btn-success" condition="status == 'disconnected'"/>
+            </header>
+            <sheet>
+           
+                <div class="oe_title">
+                    <h1><field name="name"/></h1>
+                    <h2><field name="serial_number"/></h2>
+                </div>
+                
+                <group>
+                    <group>
+                        <field name="customer_id"/>
+                        <field name="zone_id"/>
+                        <field name="group_id"/>
+                        <field name="tariff_id"/>
+                        <field name="serial_id"/>
+                    </group>
+                    <group>
+                        <field name="connection_date"/>
+                        <field name="status"/>
+                        <field name="discount_id"/>
+                        <field name="discount_percentage"/>
+                    </group>
+                </group>
+                
+                <notebook>
+                    <page string="Location">
+                        <group string="Location">
+                            <field name="coordinates" placeholder="e.g. 12.345,-12.345"/>
+                            <field name="latitude" readonly="1"/>
+                            <field name="longitude" readonly="1"/>
+                            <field name="house_number"/>
+                            <field name="street"/>
+                            <field name="area"/>
+                        </group>
+                    </page>
+                    
+                    <page string="Readings">
+                        <div class="oe_button_box" name="button_box">
+                            <!-- <button name="action_view_readings" type="object" 
+                                    class="oe_stat_button" icon="fa-bar-chart">
+                                <field string="Readings" name="last_reading" widget="statinfo"/>
+                            </button> -->
+                        </div>
+                        <field name="last_reading"/>
+                        <field name="last_reading_date"/>
+                    </page>
+                </notebook>
+            </sheet>
+             <!-- Add chatter for logging changes -->
+            <div class="oe_chatter">
+          <field name="message_follower_ids" widget="mail_followers" readonly="1"/>
+          <field name="activity_ids" widget="mail_activity" readonly="1"/>
+          <field name="message_ids" widget="mail_thread" readonly="1"/>
+        </div>
+        </form>
+    </field>
+</record>
+
+<record id="seq_billing_meter" model="ir.sequence">
+    <field name="name">Billing Meter Reference</field>
+    <field name="code">billing.meter</field>
+    <field name="prefix">BM/</field>
+    <field name="padding">6</field>
+    <field name="company_id" eval="False"/>
+</record>
+
+<record id="view_billing_meter_tree" model="ir.ui.view">
+    <field name="name">billing.meter.tree</field>
+    <field name="model">billing.meter</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="id"/>
+            <field name="name"/>
+            <field name="customer_id"/>
+            <field name="serial_number"/>
+            <field name="customer_id"/>
+            <field name="zone_id"/>
+            <field name="status" widget="badge"/>
+            <field name="connection_date"/>
+        </tree>
+    </field>
+</record>
+
+<!-- Action for Meters -->
+<record id="action_billing_meter" model="ir.actions.act_window">
+    <field name="name">Billing Meters</field>
+    <field name="res_model">billing.meter</field>
+    <field name="view_mode">tree,form</field>
+    <field name="context">{'default_status': 'connected'}</field>
+    <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">Add your first billing meter</p>
+    </field>
+</record>
+
+<menuitem id="menu_meter_property_root" name="Meters"
+          parent="menu_water_utility_properties"
+          action="action_billing_meter"
+          sequence="30"/>
+</odoo>

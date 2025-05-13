@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_create_customer_meter_wizard_form" model="ir.ui.view">
+        <field name="name">create.customer.meter.wizard.form</field>
+        <field name="model">create.customer.meter.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create Customer Meter">
+                <sheet>
+                    <!-- Header Section -->
+                    <div class="oe_title">
+                        <h1 class="text-center text-primary">New Water Meter Installation</h1>
+                        <h2 class="text-center text-muted">
+                            <field name="lead_id" invisible="1"/>
+                            For: <field name="customer_name"/>
+                        </h2>
+                    </div>
+
+                    <!-- Customer Information -->
+                    <group string="Customer Details" class="bg-light p-3 rounded">
+                        <group>
+                            <field name="customer_name" string="Customer Name"/>
+                            <field name="phone" string="Phone Number"/>
+                            <field name="email" string="Email Address"/>
+                        </group>
+                        <group>
+                            <field name="coordinates" string="GPS Coordinates" placeholder="e.g. 12.345,-12.345"/>
+                            <field name="house_number" string="House Number"/>
+                            <field name="street" string="Street"/>
+                            <field name="area" string="Area"/>
+                        </group>
+                    </group>
+
+                    <!-- Meter Information -->
+                    <group string="Meter Details" class="bg-light p-3 rounded mt-3">
+                        <group>
+                            <field name="serial_id" string="Serial Number"/>
+                            <field name="zone_id" string="Zone"/>
+                            <field name="group_id" string="Technical Group"/>
+                        </group>
+                        <group>
+                            <field name="tariff_id" string="Tariff"/>
+                            <field name="discount_id" string="Discount"/>
+                            <field name="connection_date" string="Connection Date"/>
+                            <field name="status" string="Status"/>
+                        </group>
+                    </group>
+
+                    <!-- Footer Buttons -->
+                    <footer class="text-center mt-4">
+                        <button name="action_create_meter" 
+                                string="Create Meter" 
+                                type="object" 
+                                class="btn-primary btn-lg"/>
+                        <button string="Cancel" 
+                                class="btn-secondary btn-lg" 
+                                special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action to open the wizard -->
+    <record id="action_create_customer_meter_wizard" model="ir.actions.act_window">
+        <field name="name">Create Customer Meter</field>
+        <field name="res_model">create.customer.meter.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">
+            {'default_lead_id': active_id}
+        </field>
+    </record>
+</odoo>

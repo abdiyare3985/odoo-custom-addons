@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Form View Inheritance -->
+    <record id="view_product_template_form_inherit" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.water</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <!-- Add billing plan toggle and pricing method -->
+            <xpath expr="//span[@class='d-inline-flex' and .//field[@name='purchase_ok']]" position="after">
+                <span class="d-inline-flex">
+                    <field name="is_billing_plan" string="Billing Plan"/>
+                    <label for="is_billing_plan"/>
+                </span>
+                <span class="d-inline-flex" invisible="not is_billing_plan">
+                    <field name="pricing_method" widget="radio"/>
+                    <label for="pricing_method"/>
+                </span>
+            </xpath>
+
+            <!-- Add tariff fields after category -->
+            <xpath expr="//field[@name='categ_id']" position="after">
+                <field name="fixed_charge" invisible="not is_billing_plan"/>
+                <field name="consumption_rate" invisible="not is_billing_plan or pricing_method != 'consumption_based'"/>
+            </xpath>
+
+            <!-- Add tariff blocks page -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Water Tariff" invisible="not is_billing_plan">
+                    <group>
+                        <field name="pricing_method" widget="radio" colspan="2"/>
+                        <field name="consumption_rate" invisible="pricing_method != 'consumption_based'"/>
+                        <field name="block_ids" invisible="pricing_method != 'block_rate'">
+                            <tree editable="bottom">
+                                <field name="sequence" widget="handle"/>
+                                <field name="limit"/>
+                                <field name="rate"/>
+                                <field name="product_id" invisible="1"/>
+                            </tree>
+                        </field>
+                    </group>
+                </page>
+            </xpath>
+
+            <xpath expr="//field[@name='block_ids']" position="after">
+    <field name="range_ids" invisible="pricing_method != 'range_based'">
+        <tree editable="bottom">
+            <field name="sequence" widget="handle"/>
+            <field name="min_value"/>
+            <field name="max_value"/>
+            <field name="rate"/>
+            <field name="product_id" invisible="1"/>
+        </tree>
+    </field>
+</xpath>
+        </field>
+    </record>
+
+    <!-- Tree View for Billing Plans -->
+    <record id="view_product_billing_plan_tree" model="ir.ui.view">
+        <field name="name">product.billing.plan.tree</field>
+        <field name="model">product.template</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="is_billing_plan"/>
+                <field name="pricing_method"/>
+                <field name="fixed_charge"/>
+                <field name="consumption_rate" string="Rate/m³"/>
+                <field name="type"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View for Billing Plans -->
+    <record id="view_product_billing_plan_form" model="ir.ui.view">
+        <field name="name">product.billing.plan.form</field>
+        <field name="model">product.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="is_billing_plan"/>
+                        <field name="pricing_method" widget="radio"/>
+                        <field name="fixed_charge"/>
+                        <field name="consumption_rate" invisible="pricing_method != 'consumption_based'"/>
+                    </group>
+                    <notebook invisible="pricing_method != 'block_rate'">
+                        <page string="Consumption Blocks">
+                            <field name="block_ids">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="limit"/>
+                                    <field name="rate"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kanban View for Billing Plans -->
+    <record id="view_product_billing_plan_kanban" model="ir.ui.view">
+        <field name="name">product.billing.plan.kanban</field>
+        <field name="model">product.template</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="is_billing_plan"/>
+                <field name="pricing_method"/>
+                <field name="fixed_charge"/>
+                <field name="consumption_rate"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click oe_product_variant o_kanban_record">
+                            <div class="o_kanban_record_top mb16">
+                                <div class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </div>
+                                <div t-if="record.is_billing_plan.raw_value" class="text-success">
+                                    <i class="fa fa-check"/> Billing Plan
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div>Pricing: <field name="pricing_method"/></div>
+                                <div>Fixed: <field name="fixed_charge"/></div>
+                                <div t-if="record.pricing_method.raw_value == 'consumption_based'">
+                                    Rate: <field name="consumption_rate"/> per m³
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Action for Billing Plans -->
+    <record id="action_product_billing_plan" model="ir.actions.act_window">
+        <field name="name">Billing Plans</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('is_billing_plan', '=', True)]</field>
+        <field name="context">{'default_is_billing_plan': True}</field>
+        <field name="search_view_id" ref="product.product_template_search_view"/>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_billing_plans" 
+              name="Billing Plans" 
+              parent="utility_menu_config_root" 
+              action="action_product_billing_plan"
+              sequence="10"/>
+</odoo>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_meter_serial_tree" model="ir.ui.view">
+        <field name="name">meter.serial.tree</field>
+        <field name="model">meter.serial</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="serial_number"/>
+                <!-- <field name="meter_id" widget="many2one"/> -->
+                <field name="active" widget="boolean_button"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_meter_serial_form" model="ir.ui.view">
+        <field name="name">meter.serial.form</field>
+        <field name="model">meter.serial</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="serial_number"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <field name="active"/>
+                        <!-- <field name="meter_id" readonly="1"/> -->
+                    </group>
+                    <!-- <notebook>
+    <page string="Technical Specs">
+        <group>
+            <field name="meter_type"/>
+            <field name="manufacturer_id"/>
+            <field name="model"/>
+        </group>
+        <group>
+            <field name="manufacture_date"/>
+            <field name="capacity"/>
+            <field name="state" widget="statusbar"/>
+        </group>
+    </page>
+    <page string="Assignment" attrs="{'invisible': [('state','!=','assigned')]}">
+        <field name="meter_id" mode="form">
+            <form>
+                <field name="name"/>
+                <field name="zone_id"/>
+                <field name="installation_date"/>
+            </form>
+        </field>
+    </page>
+</notebook> -->
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action and Menu -->
+    <record id="action_meter_serial" model="ir.actions.act_window">
+        <field name="name">Meter Serial Numbers</field>
+        <field name="res_model">meter.serial</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+    </record>
+
+    <menuitem id="menu_meter_serial_root" name="Serial Numbers"
+              parent="utility_menu_config_root"
+              action="action_meter_serial"
+              sequence="25"/>
+</odoo>

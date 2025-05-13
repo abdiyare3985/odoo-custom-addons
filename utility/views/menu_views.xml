@@ -1,0 +1,6 @@
+<odoo>
+    <data>
+        <!-- Parent Menu -->
+        <menuitem id="utility_menu_root" name="Utility" sequence="10"/>
+    </data>
+</odoo>
