@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="code"/>
-                <field name="name"/>
+                <field name="name" string = "My Zone"/>
                 <field name="active" widget="boolean_button"/>
             </tree>
         </field>
@@ -20,7 +20,7 @@
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="name"/>
+                            <field name="name" />
                         </h1>
                         <h2>
                             <field name="code"/>
