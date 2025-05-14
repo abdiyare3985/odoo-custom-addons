@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="code"/>
-                <field name="name" string = "My Zone"/>
+                <field name="name" string = "My Zone1"/>
                 <field name="active" widget="boolean_button"/>
             </tree>
         </field>
