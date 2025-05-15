@@ -1,0 +1,10 @@
+<odoo>
+    <record id="action_meter_reading_report_pdf" model="ir.actions.report">
+        <field name="name">Meter Reading Report</field>
+        <field name="model">meter.reading.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">utility.meter_reading_report_template</field>
+        <field name="report_file">utility.meter_reading_report_template</field>
+        <field name="print_report_name">'Meter Reading Report - %s' % (object.reading_date or '')</field>
+    </record>
+</odoo>

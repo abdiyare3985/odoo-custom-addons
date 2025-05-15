@@ -31,6 +31,10 @@
         'views/create_customer_meter_wizard_views.xml',
         'views/meter_reading_views.xml',
         'views/account_move_views.xml',
+
+        'views/meter_reading_report_wizard_view.xml',
+    'report/meter_reading_report.xml',
+    'report/meter_reading_report_template.xml',
     ],
     'demo': [
         'demo/demo.xml',
