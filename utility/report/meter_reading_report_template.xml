@@ -1,49 +1,50 @@
 <odoo>
     <template id="meter_reading_report_template">
-        <t t-call="web.html_container">
-            <t t-set="company" t-value="user.company_id"/>
-            <div class="text-center">
-                <h2>Meter Reading Report</h2>
-                <t t-if="data.get('zone_id')">
-                    <strong>Zone:</strong> <t t-esc="docs and docs[0].meter_id.zone_id.name or ''"/>
-                </t>
-                <t t-if="data.get('reading_date')">
-                    <br/><strong>Reading Date:</strong> <t t-esc="data.get('reading_date')"/>
-                </t>
-            </div>
-            <br/>
-            <table class="table table-sm" style="width:100%; border-collapse: collapse; border: 1px solid #000;">
-                <thead>
-                    <tr style="background-color: #f0f0f0;">
-                        <th style="border: 1px solid #000;">Meter</th>
-                        <th style="border: 1px solid #000;">Customer</th>
-                        <th style="border: 1px solid #000;">Prevoiuse Reading</th>
-                        <th style="border: 1px solid #000;">Current Reading</th>
-                        <th style="border: 1px solid #000;">Consumption</th>
-                        <th style="border: 1px solid #000;">Rate</th>
-                        <th style="border: 1px solid #000;">Amount</th>
-                        <th style="border: 1px solid #000;">Discount</th>
-                        <th style="border: 1px solid #000;">Tax</th>
-                        <th style="border: 1px solid #000;">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <t t-foreach="docs" t-as="reading">
-                        <tr>
-                            <td style="border: 1px solid #000;"><t t-esc="reading.meter_id.name"/></td>
-                            <td style="border: 1px solid #000;"><t t-esc="reading.meter_id.customer_id.name"/></td>
-                            <td style="border: 1px solid #000;"><t t-esc="reading.prev_reading"/></td>
-                            <td style="border: 1px solid #000;"><t t-esc="reading.current_reading"/></td>
-                            <td style="border: 1px solid #000;"><t t-esc="reading.consumption"/></td>
-                            <td style="border: 1px solid #000;"><t t-esc="reading.rate"/></td>
-                            <td style="border: 1px solid #000;"><t t-esc="reading.amount_before_discount"/></td>
-                            <td style="border: 1px solid #000;"><t t-esc="reading.discount_amount"/></td>
-                            <td style="border: 1px solid #000;"><t t-esc="reading.tax_amount"/></td>
-                            <td style="border: 1px solid #000;"><t t-esc="reading.net_bill"/></td>
-                        </tr>
+        <t t-call="web.external_layout">
+            <main>
+                <div class="text-center">
+                    <h2>Meter Reading Report</h2>
+                    <t t-if="data.get('zone_id')">
+                        <strong>Zone:</strong> <t t-esc="docs and docs[0].meter_id.zone_id.name or ''"/>
                     </t>
-                </tbody>
-            </table>
+                    <t t-if="data.get('reading_date')">
+                        <br/><strong>Reading Date:</strong> <t t-esc="data.get('reading_date')"/>
+                    </t>
+                </div>
+                <br/>
+                <table class="table table-sm" style="width:100%; border-collapse: collapse; border: 1px solid #000;">
+                    <thead>
+                        <tr style="background-color: #f0f0f0;">
+                            <th style="border: 1px solid #000;">Meter</th>
+                            <th style="border: 1px solid #000;">Customer</th>
+                            <th style="border: 1px solid #000;">Prevoiuse Reading</th>
+                            <th style="border: 1px solid #000;">Current Reading</th>
+                            <th style="border: 1px solid #000;">Consumption</th>
+                            <th style="border: 1px solid #000;">Rate</th>
+                            <th style="border: 1px solid #000;">Amount</th>
+                            <th style="border: 1px solid #000;">Discount</th>
+                            <th style="border: 1px solid #000;">Tax</th>
+                            <th style="border: 1px solid #000;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="docs" t-as="reading">
+                            <tr>
+                                <td style="border: 1px solid #000;"><t t-esc="reading.meter_id.name"/></td>
+                                <td style="border: 1px solid #000;"><t t-esc="reading.meter_id.customer_id.name"/></td>
+                                <td style="border: 1px solid #000;"><t t-esc="reading.prev_reading"/></td>
+                                <td style="border: 1px solid #000;"><t t-esc="reading.current_reading"/></td>
+                                <td style="border: 1px solid #000;"><t t-esc="reading.consumption"/></td>
+                                <td style="border: 1px solid #000;"><t t-esc="reading.rate"/></td>
+                                <td style="border: 1px solid #000;"><t t-esc="reading.amount_before_discount"/></td>
+                                <td style="border: 1px solid #000;"><t t-esc="reading.discount_amount"/></td>
+                                <td style="border: 1px solid #000;"><t t-esc="reading.tax_amount"/></td>
+                                <td style="border: 1px solid #000;"><t t-esc="reading.net_bill"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </main>
         </t>
     </template>
 </odoo>
