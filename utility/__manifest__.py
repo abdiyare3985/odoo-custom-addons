@@ -35,6 +35,11 @@
         'views/meter_reading_report_wizard_view.xml',
     'report/meter_reading_report.xml',
     'report/meter_reading_report_template.xml',
+
+    'views/meter_report_wizard_view.xml',
+    'report/meter_report.xml',
+    'report/meter_report_template.xml',
+
     ],
     'demo': [
         'demo/demo.xml',

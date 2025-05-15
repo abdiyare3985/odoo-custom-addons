@@ -9,3 +9,5 @@ access_billing_meter_user,billing.meter,model_billing_meter,,1,1,1,1
 access_create_customer_meter_wizard_user,create.customer.meter.wizard,model_create_customer_meter_wizard,,1,1,1,1
 access_meter_reading_user,meter.reading,model_meter_reading,,1,1,1,1
 access_meter_reading_report_wizard_user,meter.reading.report.wizard,model_meter_reading_report_wizard,,1,1,1,1
+
+access_meter_report_wizard_user,meter.report.wizard,model_meter_report_wizard,,1,1,1,1

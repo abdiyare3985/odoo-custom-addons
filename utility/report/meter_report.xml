@@ -1,0 +1,10 @@
+<odoo>
+    <record id="action_meter_report_pdf" model="ir.actions.report">
+        <field name="name">Meter List Report</field>
+        <field name="model">meter.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">utility.meter_list_report_template</field>
+        <field name="report_file">utility.meter_list_report_template</field>
+        <field name="print_report_name">'Meter Report - %s' % (object.status or '')</field>
+    </record>
+</odoo>
