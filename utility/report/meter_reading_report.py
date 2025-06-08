@@ -10,6 +10,8 @@ class MeterReadingReport(models.AbstractModel):
             domain.append(('meter_id.zone_id', '=', data['zone_id']))
         if data.get('reading_date'):
             domain.append(('reading_date', '=', data['reading_date']))
+
+        domain.append(('is_invoiced', '=', True))
         docs = self.env['meter.reading'].search(domain)
         return {
             'docs': docs,

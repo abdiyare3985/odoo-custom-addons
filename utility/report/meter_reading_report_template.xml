@@ -15,7 +15,7 @@
                 <t t-set="amount_total" t-value="0"/>
                 <t t-set="discount_total" t-value="0"/>
                 <t t-set="tax_total" t-value="0"/>
-                <t t-set="net_total" t-value="0"/>
+                <t t-set="amount" t-value="0"/>
                 <table class="table table-sm" style="width:100%; border-collapse: collapse; border: 1px solid #000;">
                     <thead>
                         <tr style="background-color: #f0f0f0;">
@@ -53,8 +53,8 @@
                                     <t t-esc="reading.tax_amount"/>
                                 </td>
                                 <td style="border: 1px solid #000;">
-                                    <t t-set="net_total" t-value="net_total + (reading.net_bill or 0)"/>
-                                    <t t-esc="reading.net_bill"/>
+                                    <t t-set="amount" t-value="amount + (reading.amount or 0)"/>
+                                    <t t-esc="reading.amount"/>
                                 </td>
                             </tr>
                         </t>
@@ -64,7 +64,7 @@
                             <td style="border: 1px solid #000;"><t t-esc="amount_total"/></td>
                             <td style="border: 1px solid #000;"><t t-esc="discount_total"/></td>
                             <td style="border: 1px solid #000;"><t t-esc="tax_total"/></td>
-                            <td style="border: 1px solid #000;"><t t-esc="net_total"/></td>
+                            <td style="border: 1px solid #000;"><t t-esc="amount"/></td>
                         </tr>
                     </tbody>
                 </table>

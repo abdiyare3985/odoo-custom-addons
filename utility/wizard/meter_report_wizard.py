@@ -20,4 +20,7 @@ class MeterReadingReportWizard(models.TransientModel):
             'zone_id': self.zone_id.id,
             'status': self.status,
         }
-        return self.env.ref('utility.action_meter_report_pdf').report_action(self, data=data)
+        #return self.env.ref('utility.action_meter_report_pdf').report_action(self, data=data).update({'target': 'new'})
+        action = self.env.ref('utility.action_meter_report_pdf').report_action(self, data=data)
+        action['target'] = 'new'
+        return action

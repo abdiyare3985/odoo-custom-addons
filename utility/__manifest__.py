@@ -44,6 +44,11 @@
     'demo': [
         'demo/demo.xml',
     ],
+    'assets': {
+    'web.assets_backend': [
+        'utility/static/src/css/meter_reading.css',
+    ],
+},
    
     'application': True,
     'installable': True,

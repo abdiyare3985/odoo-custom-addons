@@ -44,6 +44,11 @@ class MeterReading(models.Model):
         default=fields.Date.context_today,
         tracking=True
     )
+    display_name = fields.Char(
+        string='Reference',
+        compute='_compute_display_name',
+        store=True
+    )
     
     prev_reading = fields.Float(
         string='Previous Reading',
@@ -64,51 +69,69 @@ class MeterReading(models.Model):
         store=True
     )
     
-    display_name = fields.Char(
-        string='Reference',
-        compute='_compute_display_name',
-        store=True
-    )
+    
+    rate = fields.Float(
+        string="Rate",
+          compute='_compute_amount',
+        store=True,
+        digits=(12, 2))
 
     amount = fields.Float(
         string='Bill Amount',
-        compute='_compute_amount',
+          compute='_compute_amount',
         store=True,
         digits=(12, 2),
         help="Calculated bill amount based on consumption and tariff"
     )
-
-    net_bill = fields.Float(
-        string='Net Amount',
+    discount_percentage = fields.Float(related='meter_id.discount_percentage', store = False, readonly=True)
+    discount_amount = fields.Float(
+        string="Discount Amount",
+          compute='_compute_amount',
+        store=True,
+        digits=(12, 2))
+    tax_amount = fields.Float(
+        string="Tax Amount",
+          compute='_compute_amount',
+        store=True,
+        digits=(12, 2))
+    fixed_charge = fields.Float(
+        string='Fixed Charge',
         compute='_compute_amount',
+        store=True,
+        digits=(12, 2),
+        help="Calculated Fixed charge based on consumption and tariff"
+    )
+
+    total_bill = fields.Float(
+        string='Total Amount',
+          compute='_compute_amount',
         store=True,
         digits=(12, 2),
         help="Calculated bill amount based on consumption and tariff"
     )
     
-    tariff_id = fields.Many2one(
-        related='meter_id.tariff_id',
-        string='Tariff',
-        store=True,
-        readonly=True
-    )
+    # tariff_id = fields.Many2one(
+    #     related='meter_id.tariff_id',
+    #     string='Tariff',
+    #     store=True,
+    #     readonly=True
+    # )
 
     is_invoiced = fields.Boolean(string='Invoiced', default=False, copy=False)
     invoice_id = fields.Many2one('account.move', string='Invoice', copy=False)
     invoice_date = fields.Date(string='Billing Date')
 
-    discount_id = fields.Many2one('meter_id.discount_id', string="Discount")
-    discount_percentage = fields.Float(related='meter_id.discount_percentage', readonly=True)
-    discount_amount = fields.Float(compute='_compute_discount_amount', readonly=True, store=True)
+    # discount_id = fields.Many2one('meter_id.discount_id', string="Discount")
+    
 
     # In your meter.reading model, add this field definition
-    amount_before_discount = fields.Float(
-    string="Amount Before Discount",
-    compute='_compute_amount',
-    readonly=True,
-    digits=(12, 2),
-    store=True
-)
+#     amount_before_discount = fields.Float(
+#     string="Amount Before Discount",
+#       compute='_compute_amount',
+#     readonly=True,
+#     digits=(12, 2),
+#     store=True
+# )
     state = fields.Selection([
         ('draft', 'Draft'),
         ('posted', 'Posted'),
@@ -135,32 +158,29 @@ class MeterReading(models.Model):
     #     store=True
     # )
     
-    tax_amount = fields.Float(
-        string="Tax Amount",
-        compute='_compute_amount',
-        store=True,
-        digits=(12, 2))
-    
-    amount_total = fields.Float(
-        string="Total Amount",
-        compute='_compute_amount',
-        store=True,
-        digits=(12, 2))
-    
-    currency_id = fields.Many2one(
-        'res.currency',
-        default=lambda self: self.env.company.currency_id
-    )
-
-    rate = fields.Float(
-        string="Rate",
-        compute='_compute_amount',
-        store=True,
-        digits=(12, 2))
+    # tax_amount = fields.Float(
+    #     string="Tax Amount",
+    #       compute='_compute_amount',
+    #     store=True,
+    #     digits=(12, 2))
     
     # amount_total = fields.Float(
     #     string="Total Amount",
-    #     compute='_compute_amount',
+    #       compute='_compute_amount',
+    #     store=True,
+    #     digits=(12, 2))
+    
+    # currency_id = fields.Many2one(
+    #     'res.currency',
+    #     # default=lambda self: self.env.company.currency_id
+    #     default=lambda self: self.env.user.company_id.currency_id
+    # )
+
+    
+    
+    # amount_total = fields.Float(
+    #     string="Total Amount",
+    #       compute='_compute_amount',
     #     store=True,
     #     digits=(12, 2))
 
@@ -181,9 +201,9 @@ class MeterReading(models.Model):
             try:
                 last_reading = self.search([
                     ('meter_id', '=', record.meter_id.id),
-                    ('id', '!=', record.id or False)  # Exclude current record if editing
+                    ('id', '!=', record.id or False),('state', '=', 'posted')  # Exclude current record if editing
                 ], order='reading_date desc, create_date desc', limit=1)
-                
+                print(f"ONCHANGE last_reading: {last_reading}")
                 record.prev_reading = last_reading.current_reading if last_reading else 0.0
                 
                 # Auto-set reading date to today if empty
@@ -249,7 +269,7 @@ class MeterReading(models.Model):
             else:
                 bill_date = record.reading_date + relativedelta(months=-1)
             
-            record.bill_period = bill_date.strftime('%Y-%m')
+            record.bill_period = bill_date.strftime('%Y-%m-%d')
 
     def _validate_reading_date(self, reading_date):
         """ Validate reading date with proper context handling """
@@ -284,20 +304,70 @@ class MeterReading(models.Model):
                 record.display_name = False
     
     # Business Logic
+    # @api.model
+    # def create(self, vals):
+    #     # Auto-fetch previous reading if not provided
+    #     if 'prev_reading' not in vals:
+    #         last_reading = self.search([
+    #             ('meter_id', '=', vals.get('meter_id'))
+    #         ], order='reading_date desc', limit=1)
+            
+    #         vals['prev_reading'] = last_reading.current_reading if last_reading else 0.0
+
+
+    #     print(f"Trying to save {vals}")
+    #     record = super().create(vals)
+    #     print(f"Save result: {record}")
+    #     if record:
+    #        print("successfuly saved")
+    #        record.action_create_invoice()
+
+        
+        
+    #     return record
+
+    # def calculate_bill(self):
+    #     reading_vals = {}
+    #     for record in self:
+    #         meter = record.meter_id
+    #         tariff = record.meter_id.tariff_id
+    #         if not tariff:
+    #           raise UserError(_("No tariff defined for this meter!"))
+    #     print(f" meter: {meter.id}")
+        
+        #return reading_vals
+
+    # def calculate_bill(self):
+    #  for record in self:
+    #     meter = record.meter_id  # This is the related billing.meter record
+    #     # Now you can use meter fields, e.g.:
+    #     print("Meter name:", meter.name)
+    #     # ... your calculation logic ...
+
+    # @api.model
+    # def create(self, vals):
+    #   # print(f"Creating Meter Reading with values: {vals}")
+    #    vals = self._calculate_bill_vals(vals)
+    
+    #    record = super().create(vals)
+    #    return record
+
+      # Business Logic
     @api.model
     def create(self, vals):
         # Auto-fetch previous reading if not provided
-        if 'prev_reading' not in vals:
-            last_reading = self.search([
-                ('meter_id', '=', vals.get('meter_id'))
-            ], order='reading_date desc', limit=1)
+        # if 'prev_reading' not in vals:
+        #     last_reading = self.search([
+        #         ('meter_id', '=', vals.get('meter_id'))
+        #     ], order='reading_date desc', limit=1)
             
-            vals['prev_reading'] = last_reading.current_reading if last_reading else 0.0
+        #     vals['prev_reading'] = last_reading.current_reading if last_reading else 0.0
 
 
         print(f"Trying to save {vals}")
         record = super().create(vals)
         print(f"Save result: {record}")
+        record.action_validate_reading()
         if record:
            print("successfuly saved")
            record.action_create_invoice()
@@ -305,6 +375,25 @@ class MeterReading(models.Model):
         
         
         return record
+
+    def _calculate_bill_vals(self, vals):
+    # You can access meter, tariff, etc. using vals['meter_id'], vals['current_reading'], etc.
+        meter = self.env['billing.meter'].browse(vals.get('meter_id'))
+        if not meter:
+            raise UserError(_("Meter not found!"))
+        if not meter.tariff_id:
+            raise UserError(_("No tariff defined for this meter!"))
+        
+        tariff = meter.tariff_id
+        print(f"Calculating bill for meter: {meter.name}, tariff: {tariff.name}")
+       # consumption = vals.get('current_reading', 0) - vals.get('prev_reading', 0)
+        amount = 0.0
+        tax_amount = 0.0
+        vals['amount'] = amount
+        vals['tax_amount'] = tax_amount
+   
+        return vals
+
     
     def action_validate_reading(self):
         """ Additional validation logic if needed """
@@ -319,89 +408,85 @@ class MeterReading(models.Model):
 
    
 
-    @api.depends('consumption', 'meter_id.tariff_id', 'discount_percentage')
+   # @api.depends('consumption', 'meter_id.tariff_id', 'discount_percentage')
+    
+    @api.depends(
+    'consumption',
+    'meter_id.tariff_id.fixed_charge',
+    'meter_id.tariff_id.pricing_method',
+    'meter_id.tariff_id.block_ids',
+    'meter_id.tariff_id.range_ids',
+    'meter_id.tariff_id.taxes_id',
+    'discount_percentage'
+)
     def _compute_amount(self):
      for record in self:
         amount = 0.0
         amount_before_discount = 0.0
-        
-        if record.consumption and record.meter_id.tariff_id:
-            tariff = record.meter_id.tariff_id
-            
-            # Fixed charge (typically not discounted)
-            fixed_charge = tariff.fixed_charge
-            
-            
-            amount += fixed_charge
-            amount_before_discount += fixed_charge
-            
-            # Consumption charges
-            if tariff.pricing_method == 'block_rate':
-                remaining = record.consumption
-                i=1
-                for block in tariff.block_ids.sorted('sequence'):
-                    if remaining <= 0: 
-                        break
-                    block_consumption = (
-                        min(remaining, block.limit) 
-                        if block.limit > 0 
-                        else remaining
-                    )
-                    print(f"Block Rate: {block.rate}")
-                    amount += block_consumption * block.rate
-                    amounttwo = block_consumption * block.rate
-                    print(f"{block_consumption} * {block.rate} : {amounttwo}")
-                    remaining -= block_consumption
-                    i=i+1
-                    
-            elif tariff.pricing_method == 'consumption_based':
-                amount += record.consumption * tariff.consumption_rate
-                record.rate=tariff.consumption_rate
-                
-            elif tariff.pricing_method == 'range_based':
-                 applicable_range = tariff.range_ids.sorted('min_value').filtered(
-                 lambda r: (r.min_value <= record.consumption) and 
-                 (not r.max_value or record.consumption <= r.max_value))
-    
-                 if applicable_range:
-                    amount += record.consumption * applicable_range[0].rate  # Multiply consumption by range rate
-                    record.rate = applicable_range[0].rate
-                 else:
-        # Fallback: Use the highest range's rate if consumption exceeds all ranges
-                     highest_range = tariff.range_ids.sorted('min_value', reverse=True)[:1]
-                     if highest_range:
-                        amount += record.consumption * highest_range[0].rate  # Multiply consumption by high
-                        
-                        print(f"highest_range[0].rate: {highest_range[0].rate}")
+        record.rate = 0.0
+        record.fixed_charge = 0.0
+        record.tax_amount = 0.0
+        record.discount_amount = 0.0
+        record.amount = 0.0
+        record.total_bill = 0.0
 
-                     #record.rate = highest_range[0].rate
-            
-            amount_before_discount = amount - fixed_charge
-            taxes = self.meter_id.tariff_id.taxes_id
-            record.net_bill = amount_before_discount
-            
-            
-            # Apply discount only to consumption portion if needed
-            if record.discount_percentage:
-                consumption_amount = amount - fixed_charge
-                print(f"consumption_amount: {consumption_amount}")
-                discounted_consumption = consumption_amount * (1 - (record.discount_percentage / 100))
-                print(f"discounted_consumption: {discounted_consumption}")
-                amount = fixed_charge + discounted_consumption
-                print(f"amount after discount: {amount}")
+        tariff = record.meter_id.tariff_id
+        if not record.consumption or not tariff:
+            continue
 
-            for tax in taxes:
-                print(f"Tax {tax.name}: {tax.amount}%")
-                print(f"discounted_consumption: {discounted_consumption}")
-                record.tax_amount = (tax.amount/100) * discounted_consumption
-        
 
-        
-        record.amount_before_discount = tools.float_round(amount_before_discount, precision_digits=2)
+        # Fixed charge
+        fixed_charge = tariff.fixed_charge or 0.0
+        record.fixed_charge = fixed_charge
+        #amount += fixed_charge
+       # amount_before_discount += fixed_charge
 
-        record.amount = tools.float_round(amount, precision_digits=2) + record.tax_amount
-        
+        # Consumption charges
+        if tariff.pricing_method == 'block_rate':
+            remaining = record.consumption
+            for block in tariff.block_ids.sorted('sequence'):
+                if remaining <= 0:
+                    break
+                block_consumption = min(remaining, block.limit) if block.limit > 0 else remaining
+                amount += block_consumption * block.rate
+                remaining -= block_consumption
+        elif tariff.pricing_method == 'consumption_based':
+            amount += record.consumption * tariff.consumption_rate
+            record.rate = tariff.consumption_rate
+        elif tariff.pricing_method == 'range_based':
+            applicable_range = tariff.range_ids.sorted('min_value').filtered(
+                lambda r: (r.min_value <= record.consumption) and
+                (not r.max_value or record.consumption <= r.max_value))
+            if applicable_range:
+                amount += record.consumption * applicable_range[0].rate
+                record.rate = applicable_range[0].rate
+            else:
+                highest_range = tariff.range_ids.sorted('min_value', reverse=True)[:1]
+                if highest_range:
+                    amount += record.consumption * highest_range[0].rate
+                    record.rate = highest_range[0].rate
 
+        #amount_before_discount = amount - fixed_charge
+
+        # Discount
+        discounted_consumption = 0 
+        if record.discount_percentage:
+            discounted_consumption = amount * ( (record.discount_percentage / 100))
+            record.discount_amount = discounted_consumption
+            #amount = amount + fixed_charge + discounted_consumption
+
+        # Taxes
+        taxes = tariff.taxes_id
+        tax_amount = 0.0
+        for tax in taxes:
+            tax_amount += (tax.amount / 100) * (amount)
+            # tax_amount += (tax.amount / 100) * discounted_consumption
+            record.tax_amount = tax_amount
+
+        # Final amounts
+        #record.amount_before_discount = tools.float_round(amount_before_discount, precision_digits=2)
+        record.amount = tools.float_round(amount, precision_digits=2) 
+        record.total_bill = (record.amount + tax_amount + fixed_charge) - discounted_consumption
 
     def create8888(self):
    
@@ -624,22 +709,23 @@ class MeterReading(models.Model):
         if self.is_invoiced:
            raise UserError(_("This reading was already invoiced!"))
         
-        print("111111111111111111111")
+        print(f"111111111111111111111: {self.meter_id}")
         tariff = self.meter_id.tariff_id
-        customer = self.meter_id.customer_id
+        customer = self.meter_id.customer_id.id
         invoice_lines = []
-        currency = self.env.company.currency_id
-        print("22222222222222222222222222")
+        # currency = self.env.user.company_id.currency_id
+        print(f"22222222222222222222222222: {customer}")
 
-        income_account = tariff.property_account_income_id or tariff.categ_id.property_account_income_categ_id
+        #income_account = tariff.property_account_income_id or tariff.categ_id.property_account_income_categ_id
+        income_account = self.env['account.account'].sudo().search([('code', '=', '40001')], limit=1)
         if not income_account:
            raise UserError(_("Please configure income account for the tariff product!"))
         
         print("33333333333333333333333333")
         if tariff.fixed_charge > 0:
-           fixed_charge_product = self.env['product.product'].browse(2)  # Replace with your fixed charge product ID
-           fixed_account = fixed_charge_product.property_account_income_id or fixed_charge_product.categ_id.property_account_income_categ_id
-
+           fixed_charge_product = self.env['product.product'].sudo().browse(2)  # Replace with your fixed charge product ID
+           #fixed_account = fixed_charge_product.property_account_income_id or fixed_charge_product.categ_id.property_account_income_categ_id
+           fixed_account = self.env['account.account'].search([('code', '=', '21007')], limit=1)
            invoice_lines.append((0, 0, {
             'product_id': fixed_charge_product.id,
             'name': f"Water Service Fixed Charge ({self.bill_period})",
@@ -667,14 +753,21 @@ class MeterReading(models.Model):
             'tax_ids': [(6, 0, tariff.taxes_id.ids)] if tariff.taxes_id else [],
         }))
 
-        print(f"55555555555555555555555 {invoice_lines}")
+        print(f"55555555555555555555555 ")
+        # company_id = self.env.user.company_id.id
+        # if not company_id:
+        #    raise UserError(_("No company set for the current user!"))
+        
+        # print(f"company_id: {company_id}")
 
-        invoice = self.env['account.move'].create({
+
+        invoice = self.env['account.move'].sudo().create({
         'move_type': 'out_invoice',
         'invoice_date': fields.Date.today(),
-        'partner_id': customer.id,
+        'partner_id': customer,
         'invoice_line_ids': invoice_lines,
         'invoice_origin': f"Water Reading {self.display_name}",
+        #'company_id': 1,  # <-- Add this line
         #'meter_reading_id': self.id,  # Link the meter reading
         #'meter_id': self.meter_id.id,  # Link the meter reading
     })
@@ -684,7 +777,7 @@ class MeterReading(models.Model):
         invoice.action_post()
 
         
-
+        print("77777777777777777777777")
                 
         
         self.write({
