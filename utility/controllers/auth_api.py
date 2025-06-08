@@ -127,12 +127,13 @@ class AuthAPI(http.Controller):
             prev_reading = data.get('prev_reading')
             current_reading = data.get('current_reading')
             reading_date = data.get('reading_date')
+            print("Received data:", data)
 
-            if not all([meter_id, prev_reading, current_reading, reading_date]):
-                return {
-                    'status': 'error',
-                    'message': 'Missing required parameters'
-                }
+            # if not all([meter_id, prev_reading, current_reading, reading_date]):
+            #     return {
+            #         'status': 'error',
+            #         'message': 'Missing required parameters100'
+            #     }
             
             #reading = request.env['meter.reading'].with_context(from_api=True).sudo(user).create(reading_vals) 
 
