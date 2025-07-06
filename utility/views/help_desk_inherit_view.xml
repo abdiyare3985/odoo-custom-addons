@@ -1,0 +1,23 @@
+<odoo>
+    <!-- <record id="view_helpdesk_ticket_form_inherit_portal" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.inherit.portal</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+            <field name="user_id" position="attributes">
+                <attribute name="domain">[('groups_id', 'in', [ref('base.group_portal')])]</attribute>
+            </field>
+        </field>
+    </record> -->
+
+   <record id="view_helpdesk_ticket_tree_no_create" model="ir.ui.view">
+    <field name="name">helpdesk.ticket.tree.no.create</field>
+    <field name="model">helpdesk.ticket</field>
+    <field name="inherit_id" ref="helpdesk.helpdesk_tickets_view_tree"/>
+    <field name="arch" type="xml">
+        <tree position="attributes">
+            <attribute name="create">false</attribute>
+        </tree>
+    </field>
+</record>
+</odoo>

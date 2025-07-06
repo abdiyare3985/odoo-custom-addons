@@ -18,7 +18,7 @@
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">utility.meter_list_report_template</field>
         <field name="report_file">utility.meter_list_report_template</field>
-        <field name="print_report_name">'Meter Report - %s' % (object.status or '')</field>
+        <field name="print_report_name">'Meter Report '</field>
         <field name="paperformat_id" ref="utility.meter_report_paperformat_landscape"/>
     </record>
    

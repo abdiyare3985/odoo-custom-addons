@@ -1,0 +1,51 @@
+<odoo>
+    <template id="report_payment_list">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2 style="text-align:center; font-size:20px; font-weight:bold; margin-bottom:20px;">
+                        Payment Report
+                    </h2>
+                    <p style="text-align:center; font-size:14px; margin-bottom:30px;">
+                        From <t t-esc="data.get('date_from')"/> to <t t-esc="data.get('date_to')"/>
+                    </p>
+                    <table class="table table-bordered" style="width:100%; border-collapse:collapse; text-align:center;">
+                        <thead style="background-color:#f2f2f2; font-weight:bold;">
+                            <tr>
+                                <th style="padding:10px;">#</th>
+                                <th style="padding:10px;">Date</th>
+                                <th style="padding:10px;">Meter</th>
+                                <th style="padding:10px;">Customer</th>
+                                <th style="padding:10px;">Amount</th>
+                                <th style="padding:10px;">Zone</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="subtotal" t-value="0"/>
+                            <t t-set="row_number" t-value="1"/>
+                            <t t-foreach="docs" t-as="payment">
+                                <tr>
+                                    <td style="padding:10px;"><t t-esc="row_number"/></td>
+                                    <td style="padding:10px;"><t t-esc="payment.date"/></td>
+                                    <td style="padding:10px;"><t t-esc="payment.partner_id.billing_account"/></td>
+                                    <td style="padding:10px; text-align:left;"><t t-esc="payment.partner_id.display_name"/></td>
+                                    <td style="padding:10px;"><t t-esc="payment.amount"/></td>
+                                    <td style="padding:10px;"><t t-esc="payment.zone_id.name"/></td>
+                                    <t t-set="subtotal" t-value="subtotal + payment.amount"/>
+                                    <t t-set="row_number" t-value="row_number + 1"/>
+                                </tr>
+                            </t>
+                        </tbody>
+                        <tfoot>
+                            <tr style="background-color:#f9f9f9; font-weight:bold;">
+                                <td colspan="4" style="text-align:right; padding:10px;">Subtotal:</td>
+                                <td style="padding:10px;"><t t-esc="subtotal"/></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

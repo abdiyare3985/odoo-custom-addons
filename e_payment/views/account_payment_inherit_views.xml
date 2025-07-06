@@ -1,0 +1,47 @@
+<odoo>
+      <record id="view_account_payment_form_inherit_epayment" model="ir.ui.view">
+        <field name="name">account.payment.form.inherit.epayment</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//field[@name='amount']" position="after">
+                <field name="zone_id"/>
+                <field name="balance"/>
+                <field name="mobile_sender"/>
+            </xpath> -->
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+              
+                <field name="balance" readonly="1"/>
+                 <field name="zone_id" readonly="1"/>
+                <field name="mobile_sender" readonly="state != 'draft'"/>
+                <field name="trans_ref" readonly="state != 'draft'"/>
+            </xpath>
+        </field>
+    </record>
+
+     <record id="view_account_payment_tree_inherit_epayment" model="ir.ui.view">
+        <field name="name">account.payment.tree.inherit.epayment</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="zone_id"/>
+            </xpath>
+        </field>
+    </record>
+
+     <record id="action_account_payment_epayment" model="ir.actions.act_window">
+            <field name="name">Payments</field>
+            <field name="res_model">account.payment</field>
+            <field name="view_mode">tree,form</field>
+            <!-- No need to specify view_id since the inherited view is automatically applied -->
+            <!-- Optionally, you can also set a domain, context, etc. -->
+        </record>
+
+            <menuitem id="e_payment_menu_payments" name="Manual" 
+              parent="e_payment_menu_root" 
+              action="action_account_payment_epayment" sequence="10"/>
+       
+
+</odoo>

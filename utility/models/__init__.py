@@ -10,3 +10,5 @@ from . import crm_lead_inherit
 from . import res_partner_inherit
 from . import meter_reading
 from . import account_move_inherit
+#from . import ticket
+from . import res_users_inherit

@@ -1,0 +1,36 @@
+<odoo>
+    <record id="view_helpdesk_ticket_form_custom" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.custom</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type="xml">
+            <form string="New Meter Complaint">
+                <sheet>
+                    <group>
+                        <field name="name" placeholder="Complaint Title"/>
+                        <!-- <field name="meter_id"/> -->
+                        <field name="description"/>
+                        <field name="user_id"/>
+                        <!-- Add/remove fields as needed -->
+                    </group>
+                </sheet>
+               <!-- <footer>
+    <button string="Save" type="object" name="action_save" class="btn-primary" invisible="1"/>
+    <button string="Discard" class="btn-secondary" special="cancel"/>
+</footer> -->
+            </form>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_ticket_form_custom" model="ir.actions.act_window">
+    <field name="name">New Meter Complaint</field>
+    <field name="res_model">helpdesk.ticket</field>
+    <field name="view_mode">form</field>
+    <field name="view_id" ref="utility.view_helpdesk_ticket_form_custom"/>
+    <field name="target">current</field>
+</record>
+
+<menuitem id="menu_helpdesk_ticket_form_custom"
+          name="New Meter Complaint"
+          parent="helpdesk.menu_helpdesk_root"
+          action="action_helpdesk_ticket_form_custom"/>
+</odoo>

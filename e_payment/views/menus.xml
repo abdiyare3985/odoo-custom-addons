@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+ 
+    <!-- Root Utility Menu -->
+    <menuitem id="payment_menu_root" name="Payments" sequence="10"/>
+    
+    <!-- E-Payment Module Menu under Utility -->
+    <menuitem id="e_payment_menu_root" name="E-Payment" parent="payment_menu_root" sequence="20"/>
+    <menuitem id="e_payment_report_menu_root" name="Reports" parent="payment_menu_root" sequence="30"/>
+   
+</odoo>

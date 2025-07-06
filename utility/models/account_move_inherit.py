@@ -10,11 +10,44 @@ class AccountMove(models.Model):
     )
     # Related fields to access meter information directly
     meter_id = fields.Many2one(
-        'water.meter',
-        string='Water Meter',
-       
-        
+        'billing.meter',
+        string='Meter',
+        required=True,
+       # ondelete='cascade',
+       # tracking=True
     )
+    reading_period = fields.Date(
+        string='Period',
+        related='meter_reading_id.period',  # or .period if that's the field name
+        store=True,
+        readonly=True,
+    )
+    running_balance = fields.Float(
+        string="Running Balance",
+        compute="_compute_running_balance",
+        store=False
+    )
+
+    def _compute_running_balance(self):
+        """Compute the running balance for each record."""
+        for move in self:
+            # Fetch all previous records for the same partner, ordered by date
+            previous_moves = self.env['account.move'].search([
+                ('partner_id', '=', move.partner_id.id),
+               # ('state', '=', 'posted'),
+                ('date', '<=', move.date)
+            ], order='date asc, id asc')
+
+            # Calculate the running balance
+            running_balance = 0.0
+            for record in previous_moves:
+                if record.move_type in ['out_invoice', 'entry8888'] and record.state == 'posted':  # Add for invoices or journal entries
+                    running_balance += record.amount_total
+                    print(f"Adding {record.amount_total} for {record.move_type} on {record.date}, new balance: {running_balance}")
+                elif record.move_type in ['entry','out_refund3434', 'in_payment343'] and record.state == 'posted':  # Subtract for refunds or payments
+                    running_balance -= record.amount_total
+                    print(f"Subtracting {record.amount_total} for {record.move_type} on {record.date}, new balance: {running_balance}")
+                record.running_balance = running_balance
     
     # def action_post(self):
     

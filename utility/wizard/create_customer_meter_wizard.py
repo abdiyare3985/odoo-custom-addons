@@ -142,9 +142,18 @@ class CreateCustomerMeterWizard(models.TransientModel):
         })
 
         # Executing raw SQL query in Odoo
-        self.env.cr.execute("SELECT COALESCE(MAX(id), 0) + 1 FROM billing_meter")
-        new_id = self.env.cr.fetchone()[0]
-        print(f"new id is: {new_id}")
+        # self.env.cr.execute("SELECT COALESCE(MAX(id), 0) + 1 FROM billing_meter")
+        # new_id = self.env.cr.fetchone()[0]
+        # print(f"new id is: {new_id}")
+
+        # Get the maximum meter name (assuming it's numeric)
+        last_meter = self.env['billing.meter'].search([], order='name desc', limit=1)
+        if last_meter and last_meter.name:
+         new_id = int(last_meter.name) + 1
+        else:
+         new_id = 1  # Default to 1 if no meters exist or name is not numeric
+
+        print(f"New Meter ID: {new_id}")
 
 
 
@@ -173,8 +182,11 @@ class CreateCustomerMeterWizard(models.TransientModel):
         
 
         customer.billing_account=meter.name
+        customer.meter_name= meter.name
+        customer.meter_id = meter.id
         self.lead_id.partner_id = customer.id
-        self.lead_id.meter_id = meter.name
+        self.lead_id.meter_id = meter.id
+        self.lead_id.meter_name=meter.name
 
         # Create the water meter
         # meter = self.env['water.meter'].create({

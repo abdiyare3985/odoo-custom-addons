@@ -1,0 +1,45 @@
+<odoo>
+    <!-- ================================= -->
+    <!-- OVERRIDE TREE VIEW (TICKET LIST) -->
+    <!-- ================================= -->
+    <record id="view_helpdesk_ticket_tree_inherit" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.tree.inherit</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_tree"/>  <!-- Inherits original view -->
+        <field name="arch" type="xml">
+            <!-- Find the default "New" button and REPLACE it -->
+            <xpath expr="//header/button[@name='action_create']" position="replace">
+                <!-- Our new button that opens the CUSTOM FORM -->
+                <!-- Calls our custom action -->
+                <button 
+                    name="action_helpdesk_ticket_custom"  
+                    string="New Ticket" 
+                    type="action" 
+                    class="btn-primary"
+                    icon="fa-plus"
+                />
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ================================== -->
+    <!-- OVERRIDE KANBAN VIEW (IF USED) -->
+    <!-- ================================== -->
+    <record id="view_helpdesk_ticket_kanban_inherit" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.kanban.inherit</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_kanban"/>  <!-- Inherits original Kanban -->
+        <field name="arch" type="xml">
+            <!-- Replace the Kanban "New" button -->
+            <xpath expr="//div[hasclass('o_kanban_button_new')]/button" position="replace">
+                <button 
+                    name="action_helpdesk_ticket_custom" 
+                    string="New Ticket" 
+                    type="action" 
+                    class="btn-primary"
+                    icon="fa-plus"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

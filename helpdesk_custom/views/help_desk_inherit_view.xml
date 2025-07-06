@@ -1,0 +1,35 @@
+<odoo>
+
+ <record id="helpdesk_ticket_form_inherit_contacts_comments" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.inherit.contacts.comments</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+          <xpath expr="//field[@name='user_id']" position="replace">
+    <field name="user_id2"/>
+</xpath>
+            <xpath expr="//sheet/group/group[1]" position="inside">
+                <field name="contacts"/>
+                <field name="comments"/>
+            </xpath>
+        </field>
+    </record>
+
+ <record id="helpdesk_ticket_quick_create_inherit" model="ir.ui.view">
+    <field name="name">helpdesk.ticket.quick.create.inherit</field>
+    <field name="model">helpdesk.ticket</field>
+    <field name="inherit_id" ref="helpdesk.quick_create_ticket_form"/>
+
+    <field name="arch" type="xml">
+        <xpath expr="//field[@name='user_id']" position="replace">
+    <field name="user_id2"/>
+</xpath>
+        <xpath expr="//group" position="inside">
+            <field name="ticket_type_id"/>
+             <field name="contacts"/>
+        </xpath>
+       
+    </field>
+</record>
+
+</odoo>

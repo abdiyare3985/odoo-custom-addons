@@ -15,12 +15,12 @@ class billingMeter(models.Model):
     ]
 
     # ========== IDENTIFICATION FIELDS ==========
-    name = fields.Char(
+    name = fields.Integer(
         string='Meter ID',
         required=True,
         index=True,
         tracking=True,
-        default=lambda self: self.env['ir.sequence'].next_by_code('water.meter'),
+        #default=lambda self: self.env['ir.sequence'].next_by_code('water.meter'),
         help="Unique meter identification number"
     )
 
@@ -150,7 +150,45 @@ class billingMeter(models.Model):
         store=True,
         digits=(5, 2)
     )
+    # One2many field linking to meter.reading
+    # meter_reading_ids = fields.One2many(
+    #     comodel_name='meter.reading',
+    #     inverse_name='meter_id',
+    #     string='Meter Readings'
+    # )
 
+    meter_reading_count = fields.Integer(
+        string="Meter Reading Count",
+        compute="_compute_meter_reading_count",
+        readonly=True
+    )
+    payment_count = fields.Integer(
+        string="Payment Count",
+        compute="_compute_payment_count",
+        readonly=True
+    )
+
+    
+    def _compute_payment_count(self):
+        for meter in self:
+            meter.payment_count = self.env['account.payment'].search_count([('partner_id', '=', self.customer_id.id)])
+
+    #@api.depends('id')
+    def _compute_meter_reading_count(self):
+        for meter in self:
+            meter.meter_reading_count = self.env['meter.reading'].search_count([('meter_id', '=', meter.id)])
+
+    def action_view_payments(self):
+        """Action to view payments related to the customer of this meter."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Payments',
+            'res_model': 'account.payment',
+            'view_mode': 'tree,form',
+            'domain': [('partner_id', '=', self.customer_id.id)],
+            'target': 'new',  # Open in a modal popup
+        }
     reference = fields.Char(string='Reference', readonly=True, copy=False, default=lambda self: self.env['ir.sequence'].next_by_code('water.meter'))
 
     # Add to water.meter model
@@ -160,6 +198,38 @@ class billingMeter(models.Model):
             ('invoice_line_ids.name', 'ilike', meter.name),
             ('move_type', '=', 'out_invoice')
         ])
+
+    total_balance = fields.Float(
+        string="Total Balance",
+        compute="_compute_total_balance",
+        readonly=True
+    )
+
+    @api.depends('customer_id')
+    def _compute_total_balance(self):
+        """Compute the total balance for the meter based on the customer's balance."""
+        for meter in self:
+            if meter.customer_id:
+                # Use the customer's total balance (e.g., from account.move or account.payment)
+                meter.total_balance = meter.customer_id.credit - meter.customer_id.debit
+            else:
+                meter.total_balance = 0.0
+
+    def action_view_total_balance(self):
+     """Action to view the total balance details with running balance."""
+     self.ensure_one()
+     return {
+        'type': 'ir.actions.act_window',
+        'name': 'Total Balance',
+        'res_model': 'account.move',
+        'view_mode': 'tree',
+        'view_id': self.env.ref('utility.view_account_move_tree_with_running_balance').id,
+        'domain': [('partner_id', '=', self.customer_id.id)],
+        'target': 'new',  # Open in a modal popup
+    }
+    
+
+    
 
     invoice_count = fields.Integer(compute='_compute_invoice_count')
     
@@ -260,3 +330,22 @@ class billingMeter(models.Model):
     
     def action_block(self):
         self.write({'status': 'blocked'})
+
+
+
+    def action_open_billing_meter_wizard(self):
+        """Open the Billing Meter Wizard with the partner_id pre-filled."""
+        self.ensure_one()  # Ensure the method is called for a single record
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Billing Meter Wizard',
+            'res_model': 'billing.meter.wizard',
+            'view_mode': 'form',
+            'target': 'new',  # Open in a modal popup
+            'context': {
+                'default_partner_id': self.customer_id.id,  # Pass the partner_id
+            },
+        }
+
+
+   

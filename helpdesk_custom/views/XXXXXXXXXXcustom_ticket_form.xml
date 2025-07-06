@@ -1,0 +1,31 @@
+<odoo>
+    <record id="view_custom_ticket_form" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.custom.form</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type="xml">
+            <form string="Custom Ticket Form">
+                <sheet>
+                    <group>
+                        <field name="name" string="Subject"/>
+                        <field name="description" string="Description"/>
+                        <!-- Add your custom fields here -->
+                        <field name="custom_field"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_confirm" string="Create Ticket" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_custom_ticket_form" model="ir.actions.act_window">
+        <field name="name">Create Custom Ticket</field>
+        <field name="res_model">helpdesk.ticket</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_custom_ticket_form"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="helpdesk.model_helpdesk_ticket"/>
+    </record>
+</odoo>

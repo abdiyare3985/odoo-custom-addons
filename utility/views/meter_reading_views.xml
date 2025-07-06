@@ -1,4 +1,8 @@
 <odoo>
+
+
+
+
     <record id="view_meter_reading_tree" model="ir.ui.view">
         <field name="name">meter.reading.tree</field>
         <field name="model">meter.reading</field>
@@ -12,7 +16,7 @@
                 
                 <field name="reading_date"/>
                 <field name="consumption"/>
-                <field name="amount" />
+                <field name="total_bill" />
                 <field name="payment_state" string="Payment" widget="badge" decoration-danger="payment_state == 'not_paid'" decoration-warning="payment_state in ('partial', 'in_payment')" decoration-success="payment_state in ('paid', 'reversed')" invisible="payment_state == 'invoicing_legacy' or state != 'posted'" />
                 <field name="state" widget="badge" decoration-success="state == 'posted'" decoration-info="state == 'draft'" optional="show" on_change="1" />
             </tree>
@@ -83,7 +87,7 @@
             <sheet>
                 <group>
                     <field name="meter_id"/>
-                    <field name="bill_period" readonly="1"/>
+                    <field name="period" readonly="1"/>
                     
                     <group string="Consumption">
                         <field name="prev_reading" readonly="1"/>

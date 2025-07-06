@@ -3,7 +3,14 @@ from odoo import models, fields, api
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
-    meter_id = fields.Integer(string="Meter ID")
+    #meter_id = fields.Integer(string="Meter ID")
+    meter_id = fields.Many2one(
+        'billing.meter',
+        string='Meter ID',
+       # compute='_compute_meter_fields',
+        #store=True
+    )
+    meter_name = fields.Integer(string="Meter Name")
     zone_id = fields.Many2one('billing.zone', string='Zone')
 
 

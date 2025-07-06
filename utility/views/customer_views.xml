@@ -1,0 +1,61 @@
+<odoo>
+ <!-- <record id="action_meter_readings_by_meter" model="ir.actions.act_window">
+        <field name="name">Meter Readings</field>
+        <field name="res_model">meter.reading</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('meter_id', '=', active_id)]</field>
+    </record> -->
+
+    <record id="view_res_partner_form_inherit_meter_info" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.meter.info</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+      
+            <!-- Target the notebook tag and insert the page at the first position -->
+            <xpath expr="//notebook/page[1]" position="replace">
+                <page string="Meter Info">
+                    <group>
+                        <field name="meter_name" context="{'form_view_ref': 'utility.view_billing_meter_form'}" options="{'no_create': True, 'no_open': False}"/>
+                        <!-- <field name="billing_meter_id" readonly='1'  /> -->
+                        <field name="meter_id" readonly='1'/>
+                    </group>
+                    <group>
+                        <!-- Display related fields -->
+                        <field name="meter_serial_number"/>
+                        <field name="meter_zone"/>
+                        <field name="meter_status"/>
+                        <field name="discount_name"/>
+                    </group>
+                </page>
+            </xpath>
+              <xpath expr="//notebook/page[1]" position="after">
+              
+            </xpath>
+             <!-- <xpath expr="//notebook" position="before"> -->
+                <!-- <field name="active_tab" widget="radio"/>
+            </xpath> -->
+            <!-- <xpath expr="//notebook/page[@string='Billing']" position="attributes">
+                <attribute name="attrs">{'active_tab': 'billing'}</attribute>
+            </xpath> -->
+            <!-- <xpath expr="//notebook" position="before">
+                <field name="active_tab" widget="radio"/>
+            </xpath> -->
+        </field>
+    </record>
+    <!-- <record id="action_meter_readings_by_meter" model="ir.actions.act_window">
+        <field name="name">Meter Readings</field>
+        <field name="res_model">meter.reading</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('meter_id', '=', active_id)]</field>
+    </record> -->
+
+    <record id="action_utility_customer_list" model="ir.actions.act_window">
+        <field name="name">Customers</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+         <field name="domain">[('customer_rank', '>', 0)]</field> <!-- Filter customers -->
+    </record>
+
+    <menuitem id="menu_utility_customers" name="Customers" parent="menu_water_utility_properties" sequence="20" action="action_utility_customer_list"/>
+</odoo>

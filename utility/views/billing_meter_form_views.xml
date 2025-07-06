@@ -1,0 +1,19 @@
+<odoo>
+    <record id="view_billing_meter_form2" model="ir.ui.view">
+        <field name="name">billing.meter.form.utility</field>
+        <field name="model">billing.meter</field>
+        <field name="arch" type="xml">
+            <form string="Billing Meter">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="serial_number"/>
+                        <field name="zone_id"/>
+                        <field name="status"/>
+                        <field name="customer_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

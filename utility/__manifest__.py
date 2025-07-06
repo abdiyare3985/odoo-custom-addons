@@ -31,6 +31,8 @@
         'views/create_customer_meter_wizard_views.xml',
         'views/meter_reading_views.xml',
         'views/account_move_views.xml',
+        'views/customer_views.xml',
+        'views/billing_meter_form_views.xml',
 
         'views/meter_reading_report_wizard_view.xml',
     'report/meter_reading_report.xml',
@@ -39,6 +41,14 @@
     'views/meter_report_wizard_view.xml',
     'report/meter_report.xml',
     'report/meter_report_template.xml',
+    'views/res_users_inherit_view.xml',
+    # 'views/helpdesk_ticket_custom_form.xml',
+    # 'views/help_desk_inherit_view.xml',
+    # 'views/ticket_views.xml',
+
+    
+    'report/partner_statement_report/report_action.xml',
+    'report/partner_statement_report/report_template.xml',
 
     ],
     'demo': [
@@ -46,7 +56,9 @@
     ],
     'assets': {
     'web.assets_backend': [
-        'utility/static/src/css/meter_reading.css',
+        #'utility/static/src/css/meter_reading.css',
+        #'utility/static/src/js/notebook_page_listener.js',
+        #'utility/static/src/js/select_meter_info_page.js',
     ],
 },
    

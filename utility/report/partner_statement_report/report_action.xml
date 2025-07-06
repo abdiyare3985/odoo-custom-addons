@@ -1,0 +1,33 @@
+<odoo>
+    <!-- <report
+        id="action_billing_meter_statement_report"
+        string="Billing Meter Statement"
+        model="billing.meter.wizard"
+        report_type="qweb-pdf"
+        name="utility.report_billing_meter_statement"
+        file="utility.report_billing_meter_statement"
+        print_report_name="'Statement - %s' % (object.partner_id.name)"
+    /> -->
+    <record id="meter_report_paperformat_landscape" model="report.paperformat">
+    <field name="name">Meter Report Landscape</field>
+    <field name="default" eval="False"/>
+    <field name="format">A4</field>
+    <field name="orientation">Landscape</field>
+    <field name="margin_top">20</field>
+    <field name="margin_bottom">20</field>
+    <field name="margin_left">7</field>
+    <field name="margin_right">7</field>
+    <field name="header_line" eval="False"/>
+    <field name="header_spacing">10</field>
+    <field name="dpi">90</field>
+</record>
+      <record id="action_billing_meter_statement_report" model="ir.actions.report">
+        <field name="name">Meter List Report</field>
+        <field name="model">billing.meter.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">utility.billing_meter_statement_report</field>
+        <field name="report_file">utility.billing_meter_statement_report</field>
+        <field name="print_report_name">'Meter Report - '</field>
+        <field name="paperformat_id" ref="utility.meter_report_paperformat_landscape"/>
+    </record>
+</odoo>

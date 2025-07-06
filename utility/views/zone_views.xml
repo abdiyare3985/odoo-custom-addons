@@ -6,7 +6,8 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="code"/>
-                <field name="name" string = "My Zone1"/>
+                <field name="name" />
+                <field name="collector_id" />
                 <field name="active" widget="boolean_button"/>
             </tree>
         </field>
@@ -24,6 +25,9 @@
                         </h1>
                         <h2>
                             <field name="code"/>
+                        </h2>
+                         <h2>
+                            <field name="collector_id"/>
                         </h2>
                     </div>
                     

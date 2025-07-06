@@ -26,6 +26,11 @@ class Zones(models.Model):
         string='Company',
         default=lambda self: self.env.company,
         required=True)
+    collector_id = fields.Many2one(
+        'res.users',
+        string='Zone Collector',
+        help='User responsible for collecting meter readings in this zone'
+    )
     
     # meter_ids = fields.One2many(
     #     'water.meter',

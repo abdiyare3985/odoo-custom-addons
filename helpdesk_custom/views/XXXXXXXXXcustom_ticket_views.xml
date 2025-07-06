@@ -1,0 +1,55 @@
+<odoo>
+    <!-- ========================== -->
+    <!-- NEW CUSTOM TICKET FORM VIEW -->
+    <!-- ========================== -->
+    <record id="view_helpdesk_ticket_custom_form" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.custom.form</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type="xml">
+            <!-- Form Structure -->
+            <form string="Custom Ticket Form">
+                <!-- Sheet = Main Content Area -->
+                <sheet>
+                    <!-- Group = Field Layout -->
+                    <group>
+                        <!-- Default Fields -->
+                        <field name="name" string="Ticket Title" required="1"/>
+                        <field name="team_id" string="Support Team"/>
+                        
+                        <!-- Custom Fields -->
+                        <field name="custom_reference" string="Reference Code"/>
+                        <field name="priority_notes" string="Priority Notes"/>
+                    </group>
+                    
+                    <!-- Notebook = Tabbed Sections -->
+                    <notebook>
+                        <page string="Description">
+                            <field name="description" string="Detailed Issue"/>
+                        </page>
+                        <page string="Additional Info">
+                            <!-- More custom fields can go here -->
+                        </page>
+                    </notebook>
+                </sheet>
+                
+                <!-- Footer = Buttons -->
+                <footer>
+                    <button name="action_confirm" string="Create Ticket" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================= -->
+    <!-- NEW ACTION TO OPEN CUSTOM FORM -->
+    <!-- ================================= -->
+    <record id="action_helpdesk_ticket_custom" model="ir.actions.act_window">
+        <field name="name">Create Custom Ticket</field>
+        <field name="res_model">helpdesk.ticket</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_helpdesk_ticket_custom_form"/>  <!-- Uses our custom form -->
+        <field name="target">new</field>  <!-- Opens in a popup/dialog -->
+        <field name="binding_model_id" ref="helpdesk.model_helpdesk_ticket"/>  <!-- Binds to Helpdesk -->
+    </record>
+</odoo>

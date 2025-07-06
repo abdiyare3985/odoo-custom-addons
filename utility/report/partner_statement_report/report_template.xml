@@ -1,0 +1,67 @@
+<odoo>
+    <template id="billing_meter_statement_report">
+        <t t-call="web.external_layout">
+            <main>
+                <!-- Header Section -->
+                <div class="text-center">
+                    <h2 style="margin-bottom: 5px;">Customer Statement</h2>
+                    <p style="font-size: 14px; color: #666;">Statement for <t t-esc="partner_name"/>
+                    , Zone <t t-esc="zone"/>
+                    </p>
+                    
+                    <p style="font-size: 12px; color: #666;">
+                        <strong>From:</strong> <t t-esc="start_date"/> 
+                        <strong>To:</strong> <t t-esc="end_date"/>
+                    </p>
+                </div>
+
+                <!-- Opening Balance -->
+                <div style="margin-top: 20px;">
+                   
+                    <p style="font-size: 14px;">
+                        <strong>Opening Balance:</strong> 
+                        <t t-esc="opening_balance"/>
+                    </p>
+                </div>
+
+                <!-- Transactions Table -->
+                <table class="table table-sm table-bordered" style="margin-top: 20px; width: 100%; font-size: 12px;">
+                    <thead style="background-color: #f2f2f2;">
+                        <tr>
+                            <th style="text-align: left; padding: 5px;">Date</th>
+                            <th style="text-align: left; padding: 5px;">Description</th>
+                            <th style="text-align: right; padding: 5px;">Debit</th>
+                            <th style="text-align: right; padding: 5px;">Credit</th>
+                            <th style="text-align: right; padding: 5px;">Running Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="transactions" t-as="line">
+                            <tr>
+                                <td style="padding: 5px;"><t t-esc="line['date']"/></td>
+                                <td style="padding: 5px;"><t t-esc="line['name']"/></td>
+                                <td style="text-align: right; padding: 5px;">
+                                    <t t-esc="line['debit']"/>
+                                </td>
+                                <td style="text-align: right; padding: 5px;">
+                                    <t t-esc="line['credit']"/>
+                                </td>
+                                <td style="text-align: right; padding: 5px;">
+                                    <t t-esc="line['running_balance']"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <!-- Closing Balance -->
+                <div style="margin-top: 20px; text-align: right;">
+                    <p style="font-size: 14px;">
+                        <strong>Closing Balance:</strong> 
+                        <t t-esc="transactions[-1]['running_balance']"/>
+                    </p>
+                </div>
+            </main>
+        </t>
+    </template>
+</odoo>
