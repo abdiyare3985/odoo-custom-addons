@@ -24,7 +24,7 @@
                         <!-- Display related fields -->
                         <field name="meter_serial_number"/>
                         <field name="meter_zone"/>
-                        <field name="meter_status"/>
+                        <!-- <field name="meter_status"/> -->
                         <field name="discount_name"/>
                     </group>
                 </page>
