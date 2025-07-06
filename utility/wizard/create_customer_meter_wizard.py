@@ -13,8 +13,8 @@ class CreateCustomerMeterWizard(models.TransientModel):
         string='Meter ID',
         
         index=True,
-        tracking=True,
-        default=lambda self: self.env['ir.sequence'].next_by_code('water.meter'),
+        #tracking=True,
+        #default=lambda self: self.env['ir.sequence'].next_by_code('water.meter'),
         help="Unique meter identification number"
     )
     
@@ -23,8 +23,8 @@ class CreateCustomerMeterWizard(models.TransientModel):
         string='Serial Number',
         required=True,
         domain="[('state','=','available')]",
-        ondelete='restrict',
-        tracking=True
+       # ondelete='restrict',
+        #tracking=True
     )
 
 
@@ -32,7 +32,7 @@ class CreateCustomerMeterWizard(models.TransientModel):
         'billing.zone',
         string='Zone',
         required=True,
-        tracking=True,
+        #tracking=True,
         index=True,
         help="Geographical zone where meter is installed"
     )
@@ -40,7 +40,7 @@ class CreateCustomerMeterWizard(models.TransientModel):
     group_id = fields.Many2one(
         'meter.group',
         string='Technical Group',
-        tracking=True,
+        #tracking=True,
         help="Functional grouping of meters"
     )
     
@@ -103,14 +103,14 @@ class CreateCustomerMeterWizard(models.TransientModel):
         domain="[('is_billing_plan', '=', True)]",
         string='Tariff Plan',
         required=True,
-        tracking=True,
+        #tracking=True,
         help="Pricing plan applied to this meter"
     )
     
     discount_id = fields.Many2one(
         'meter.discount',
         string='Discount',
-        tracking=True,
+        #tracking=True,
         #domain="[('active','=',True)]"
     )
     
