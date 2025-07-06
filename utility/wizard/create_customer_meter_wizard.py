@@ -46,7 +46,7 @@ class CreateCustomerMeterWizard(models.TransientModel):
     
     coordinates = fields.Char(
         string='GPS Coordinates',
-        tracking=True,
+        #tracking=True,
         help="Latitude,Longitude (e.g. '12.345,-12.345')"
     )
     
@@ -66,18 +66,18 @@ class CreateCustomerMeterWizard(models.TransientModel):
     
     house_number = fields.Char(
         string='House Number',
-        tracking=True,
+        #tracking=True,
         size=16
     )
     
     street = fields.Char(
         string='Street',
-        tracking=True
+        #tracking=True
     )
     
     area = fields.Char(
         string='Area/Neighborhood',
-        tracking=True
+        #tracking=True
     )
 
     # ========== SERVICE FIELDS ==========
@@ -85,7 +85,7 @@ class CreateCustomerMeterWizard(models.TransientModel):
         string='Connection Date',
         default=fields.Date.today,
         required=True,
-        tracking=True
+        #tracking=True
     )
     
     status = fields.Selection(
@@ -94,7 +94,7 @@ class CreateCustomerMeterWizard(models.TransientModel):
          ('blocked', 'Blocked')],
         string='Connection Status',
         default='connected',
-        tracking=True,
+        #tracking=True,
         index=True
     )
     

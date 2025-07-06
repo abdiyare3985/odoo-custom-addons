@@ -6,8 +6,8 @@
         <field name="arch" type="xml">
            <xpath expr="//field[@name='login']" position="after">
                <group>
-                    <field name="is_technitian"/>
-                    <field name="is_meterreader"/>
+                    <!-- <field name="is_technitian"/>
+                    <field name="is_meterreader"/> -->
                 </group>
             </xpath>
         </field>
